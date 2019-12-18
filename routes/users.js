@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const User = require('../models/users')
+const fs = require('fs')
 
 // Get all
 router.get('/', async (req, res) => {
@@ -19,9 +20,22 @@ router.get('/:id', getUser, (req, res) => {
 
 // Create
 router.post('/', async (req, res) => {
+
+    let image = req.body.img
+    let imageNoSpaces = image.replace(" ", "+")
+    let imageArr = imageNoSpaces.split(";base64,")
+    let imagedata = imageArr[1]
+    let buff = Buffer(imagedata, 'base64')
+    let photoName = req.body.username + '.jpg'
+    fs.writeFileSync('./uploads/' + photoName, buff)
+    
     const user = new User({
-        name: req.body.name
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+        img: 'http://localhost:3000/uploads/' + photoName
     })
+
     try {
         const newUser = await user.save()
         res.status(201).json(newUser)
@@ -34,6 +48,18 @@ router.post('/', async (req, res) => {
 router.patch('/:id', getUser, async (req, res) => {
     if (req.body.name != null) {
         res.user.name = req.body.name
+    }
+    if (req.body.username != null) {
+        res.user.username = req.body.username
+    }
+    if (req.body.email != null) {
+        res.user.email = req.body.email
+    }
+    if (req.body.password != null) {
+        res.user.password = req.body.password
+    }
+    if (req.body.avatar != null) {
+        res.user.avatar = req.body.avatar
     }
     try {
         const updatedUser = await res.user.save()

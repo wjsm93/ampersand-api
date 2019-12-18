@@ -12,6 +12,9 @@ db.once('open', () => console.log('Connected to DB'))
 app.use(express.json())
 
 const usersRouter = require('./routes/users')
+const postsRouter = require('./routes/posts')
+
 app.use('/users', usersRouter)
+app.use('/posts', postsRouter)
 
 app.listen(3000, () => console.log('Server Started'))

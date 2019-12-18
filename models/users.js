@@ -16,7 +16,7 @@ const usersSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    avatar: {
+    img: {
         type: String
     },
     created_at : {
